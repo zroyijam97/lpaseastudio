@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASEA Studio Bot — AI UGC Video & Social Media Automation</title>
+  <link rel="icon" href="Gemini_Generated_Image_175yi7175yi7175y.png" type="image/png" />
+  
+  <style>
+    /* CSS Variables: Light Theme adaptation of affiliatebot.my */
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-light: rgba(37, 99, 235, 0.1);
+      --gradient-start: #2563eb;
+      --gradient-end: #8b5cf6;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; object-fit: cover; }
+
+    /* Layout Helpers */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    
+    .max-w-3xl { max-width: 48rem; margin: 0 auto; }
+    .max-w-4xl { max-width: 56rem; margin: 0 auto; }
+    .max-w-5xl { max-width: 64rem; margin: 0 auto; }
+    .max-w-6xl { max-width: 72rem; margin: 0 auto; }
+
+    /* Typography */
+    .text-center { text-align: center; }
+    .font-bold { font-weight: 700; }
+    .font-black { font-weight: 900; }
+    .font-medium { font-weight: 500; }
+    
+    .gradient-text {
+      background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Components - Glass Card */
+    .glass-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    .glass-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+      border-radius: 0.75rem;
+      font-weight: 900;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-primary {
+      background-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 0 20px var(--accent-light);
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      box-shadow: 0 0 30px rgba(37, 99, 235, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--border);
+      color: var(--text-primary);
+    }
+    .btn-outline:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+    }
+    .brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+
+    /* Sections General */
+    .section-py { padding: 6rem 0; }
+    .bg-alt { background-color: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .section-header { margin-bottom: 3rem; }
+    .section-title { font-size: clamp(2rem, 4vw, 2.5rem); margin-bottom: 1rem; line-height: 1.2; }
+    .section-subtitle { font-size: 1.125rem; color: var(--text-secondary); max-width: 48rem; margin: 0 auto; font-weight: 500; }
+
+    /* 1. Hero Section */
+    .hero {
+      padding: 6rem 0 5rem;
+      background: radial-gradient(circle at center top, var(--accent-light) 0%, var(--bg-primary) 60%);
+      text-align: center;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: var(--text-secondary);
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .hero-visual {
+      margin-top: 4rem;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+
+    /* 2. Problem Section */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .problem-card {
+      background: #fff0f2;
+      border: 1px solid #ffcdd2;
+      padding: 2rem;
+      border-radius: 1rem;
+    }
+    .problem-card h3 { color: var(--danger); font-size: 1.25rem; margin-bottom: 0.75rem; }
+    .problem-card p { color: #9f1239; font-weight: 500; }
+
+    /* 4. How It Works (Steps) */
+    .steps-container { display: flex; flex-direction: column; gap: 2rem; }
+    .step-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .step-card { flex-direction: row; align-items: center; }
+      .step-card:nth-child(even) { flex-direction: row-reverse; }
+    }
+    .step-content { padding: 2.5rem; flex: 1; }
+    .step-image { flex: 1; width: 100%; border-left: 1px solid var(--border); }
+    .step-card:nth-child(even) .step-image { border-left: none; border-right: 1px solid var(--border); }
+    .step-number {
+      background: var(--bg-tertiary); color: var(--accent);
+      width: 3rem; height: 3rem; border-radius: 0.75rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; font-weight: 900; margin-bottom: 1rem;
+      border: 1px solid var(--border);
+    }
+
+    /* Grid Layouts for Media & Benefits */
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+
+    /* Feedback Gallery */
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      align-items: center; /* Center small images vertically */
+      justify-items: center;
+    }
+    .feedback-img {
+      width: 100%;
+      height: auto;
+      max-height: 450px;
+      object-fit: contain; /* Prevent small images from stretching weirdly */
+      background: #ffffff;
+      padding: 0.5rem; /* Neat polaroid-like frame for small dimensions */
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    .feedback-img:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 20px 25px -5px var(--accent-light);
+      border-color: var(--accent);
+    }
+    .feedback-highlight {
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 25px var(--accent-light);
+      transform: scale(1.03);
+    }
+
+    /* Shorts Carousel */
+    .shorts-carousel {
+      display: grid;
+      grid-template-rows: repeat(3, auto);
+      grid-auto-columns: max-content;
+      grid-auto-flow: column;
+      overflow-x: auto;
+      gap: 1.25rem;
+      padding: 1rem 0 2rem 0;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+    }
+    .shorts-carousel::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+    .short-item {
+      width: 220px;
+      height: 390px;
+      scroll-snap-align: center;
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+    }
+    .short-item iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .benefit-card { padding: 2rem; }
+    .benefit-icon { 
+      width: 3rem; height: 3rem; border-radius: 0.75rem; 
+      background: var(--accent-light); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 1rem;
+    }
+
+    /* 10. Pricing Section */
+    .pricing-card { position: relative; padding: 3rem 2rem; display: flex; flex-direction: column; }
+    .pricing-card.featured { border: 2px solid var(--accent); box-shadow: 0 20px 25px -5px var(--accent-light); }
+    .badge-top {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: white; padding: 0.25rem 1.25rem;
+      border-radius: 9999px; font-size: 0.875rem; font-weight: 700;
+    }
+    .price-amount { font-size: 3.5rem; font-weight: 900; margin: 1rem 0 0.5rem; line-height: 1; }
+    .price-period { color: var(--text-muted); font-size: 1.125rem; font-weight: 500; }
+    .features-list { margin: 2rem 0; list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+    .features-list li { display: flex; align-items: flex-start; gap: 0.75rem; color: var(--text-secondary); font-weight: 500; }
+    .features-list li svg { color: var(--success); width: 1.25rem; height: 1.25rem; flex-shrink: 0; margin-top: 0.25rem; }
+
+    /* 12. FAQ */
+    .faq-item { padding: 1.5rem 2rem; cursor: pointer; }
+    .faq-question { font-weight: 700; font-size: 1.125rem; display: flex; justify-content: space-between; align-items: center; }
+    .faq-answer { margin-top: 1rem; color: var(--text-secondary); font-weight: 500; display: none; }
+
+    /* 13. Final Closing */
+    .closing-section {
+      padding: 6rem 0;
+      background: radial-gradient(circle at center, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    footer {
+      border-top: 1px solid var(--border); padding: 3rem 0;
+      background: var(--bg-primary); color: var(--text-muted);
+      font-weight: 500; font-size: 0.875rem;
+    }
+
+    /* Animations */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px var(--accent-light); }
+      50% { box-shadow: 0 0 40px rgba(37, 99, 235, 0.4); }
+    }
+    .animate-pulse-glow { animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <img src="Gemini_Generated_Image_175yi7175yi7175y.png" alt="ASEA Studio Bot Logo">
+        ASEA Studio Bot
+      </a>
+      <div>
+        <a href="#pricing" class="btn btn-primary" style="padding: 0.6rem 1.25rem; font-size: 0.875rem;">Dapatkan Akses</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- 1. HERO SECTION -->
+    <section class="hero">
+      <div class="container max-w-5xl">
+        <div class="hero-badge">
+          ✨ All-in-One AI UGC Video & Social Media Automation
+        </div>
+        <h1 class="font-black">
+          Generate AI Video & Auto-Publish Ke 10 Platform — <br />
+          <span class="gradient-text">Guna Autopilot 100%</span>
+        </h1>
+        <p class="section-subtitle" style="margin-bottom: 2.5rem;">
+          Cipta AI content (teks, imej, video UGC) dengan pantas, urus pelbagai akaun (TikTok, IG, FB, dll), dan automasikan aliran penerbitan. Semuanya dalam satu dashboard tanpa perlu lompat platform.
+        </p>
+        
+        <div>
+          <a href="#pricing" class="btn btn-primary animate-pulse-glow" style="font-size: 1.25rem; padding: 1.25rem 2.5rem;">
+            🚀 Mula Skalakan Content Sekarang
+          </a>
+        </div>
+        <p class="text-muted" style="margin-top: 1rem; font-size: 0.875rem; font-weight: 700;">
+          Dikuasakan oleh AI Studio & Workflow Automation ASEA
+        </p>
+
+        <div class="hero-visual">
+          <img src="Feedback/Screenshot 2026-05-04 at 9.02.29 PM.png" alt="Dashboard AI Studio" style="width: 100%; height: auto; opacity: 0.95;">
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: AUTOPOST EXPLANATION SECTION -->
+    <section class="section-py">
+      <div class="container max-w-4xl text-center">
+        <div class="glass-card" style="padding: 3rem 2rem; border-color: var(--accent); border-width: 2px; background: linear-gradient(to bottom, #ffffff, var(--bg-secondary));">
+          <h2 class="font-black section-title" style="margin-bottom: 1.5rem; font-size: clamp(1.8rem, 3vw, 2.2rem);">
+            <span class="gradient-text">Autopost Ke Semua Platform Serentak.</span>
+          </h2>
+          <p class="section-subtitle font-bold" style="color: var(--text-primary); font-size: 1.25rem; margin-bottom: 2rem;">
+            Dengan satu klik, anda boleh schedule ribuan content untuk semua akaun untuk sebulan, dua bulan atau selama mana anda mahu.
+          </p>
+          
+          <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 9999px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <span class="font-bold" style="font-size: 0.875rem;">Facebook</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 9999px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              <span class="font-bold" style="font-size: 0.875rem;">Instagram</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 9999px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#000000"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 21.68c-5.346 0-9.68-4.334-9.68-9.68 0-5.346 4.334-9.68 9.68-9.68 5.346 0 9.68 4.334 9.68 9.68 0 5.346-4.334 9.68-9.68 9.68zm5.545-9.68c0-3.056-2.489-5.545-5.545-5.545S6.455 8.944 6.455 12s2.489 5.545 5.545 5.545 5.545-2.489 5.545-5.545zm-5.545 3.513c-1.938 0-3.513-1.575-3.513-3.513s1.575-3.513 3.513-3.513 3.513 1.575 3.513 3.513-1.575 3.513-3.513 3.513z"/></svg>
+              <span class="font-bold" style="font-size: 0.875rem;">Threads</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 9999px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#000000"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.04.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.78-1.15 5.54-3.33 7.31-1.92 1.57-4.62 2.2-7.03 1.53-2.61-.74-4.68-2.98-5.28-5.67-.53-2.43-.16-5.04 1.2-7.13 1.73-2.73 5.01-4.26 8.22-3.84v4.02c-1.54-.11-3.1.41-4.05 1.55-1.01 1.2-1.25 2.97-.66 4.38.56 1.34 2.11 2.34 3.61 2.11 1.47-.24 2.65-1.48 2.94-2.92.08-.38.11-.76.11-1.15V.02z"/></svg>
+              <span class="font-bold" style="font-size: 0.875rem;">TikTok</span>
+            </div>
+          </div>
+          <p class="text-secondary" style="font-size: 0.875rem;">Termasuk integrasi dengan YouTube, LinkedIn, Pinterest, Bluesky, Mastodon dan lain-lain (Sehingga 10 platform disokong).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PROBLEM AGITATION -->
+    <section class="section-py bg-alt">
+      <div class="container max-w-4xl text-center">
+        <h2 class="font-black section-title" style="margin-bottom: 1rem;">
+          <span class="gradient-text">Masalah Utama Content</span>
+        </h2>
+        
+        <div class="problem-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 2rem;">
+          <div class="glass-card problem-card">
+            <h3 class="font-black">Kos Mahal Gila Nak Hire Content Creator.</h3>
+          </div>
+          <div class="glass-card problem-card">
+            <h3 class="font-black">Nak Buat Video Tapi Malu Tunjuk Muka.</h3>
+          </div>
+        </div>
+
+        <p class="section-subtitle font-bold" style="color: var(--text-primary); font-size: 1.25rem; margin-bottom: 1.5rem;">
+          Sama ada kau ni owner bisnes sibuk, atau orang kerja yang nak cari income tepi, hal buat content manual ni sumpah penat dan susah gila nak konsisten.
+        </p>
+
+        <div style="background: white; border: 2px solid var(--accent); border-radius: 1rem; padding: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); text-align: center;">
+          <h3 class="font-black" style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--danger);">Tinggalkan cara manual tu.</h3>
+          <p style="font-size: 1.125rem; line-height: 1.6; color: var(--text-primary); font-weight: 500;">
+            Dengan <b>ASEA Studio Bot</b>, kau tinggalkan cara lama. Sistem kami tolong buatkan video pakai AI terus pergi auto-post ke semua platform. Mula kaut komisen relaks jeee dari Hari Pertama.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SOLUTION INTRODUCTION -->
+    <section class="section-py">
+      <div class="container max-w-4xl text-center">
+        <h2 class="font-black section-title">
+          Satu Platform, <span class="gradient-text">Segala Penyelesaian.</span>
+        </h2>
+        <p class="section-subtitle mb-8">
+          ASEA Studio dibina khusus untuk business owner, marketer, dan agency yang mahu operasi content bergerak 10X lebih laju. Gabungan AI Studio untuk hasilkan aset kreatif dan Social Media Connect untuk automasi penerbitan terus ke 10 platform.
+        </p>
+        
+        <div class="glass-card p-8" style="padding: 2rem; background: var(--bg-tertiary); text-align: left;">
+          <h3 class="font-bold text-xl mb-4">Ekosistem ASEA Studio Workflow:</h3>
+          <ul class="features-list" style="margin: 0;">
+            <li><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> <b>AI Prompt Spinner:</b> Generate variasi skrip, situasi, angle, dan description secara pukal.</li>
+            <li><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> <b>Basket Automation:</b> Kumpul aset yang siap dijana dan jadikan ia sebagai sumber automasi post tanpa kacau manual flow.</li>
+            <li><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> <b>Master & Affiliate Ready:</b> Pantau akaun sendiri atau agihkan ke akaun affiliate dengan Drip Feed Schedule.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- 5. DEMO / PROOF -->
+    <section class="section-py">
+      <div class="container max-w-5xl text-center">
+        <div class="section-header">
+          <h2 class="font-black section-title">
+            Lihat Hasil <span class="gradient-text">AI UGC Video</span>
+          </h2>
+          <p class="section-subtitle">
+            Video kualiti tinggi yang di-generate sepenuhnya oleh AI. Boleh terus auto-post ke akaun anda.
+          </p>
+        </div>
+
+        <div class="shorts-carousel">
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/Gra5sBFDyQE" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/4n0VpAZgtV0" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/lWywGaQkHss" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/UjPTk30Do-I" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/CEdJAttqtig" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/C19S-s1f0LM" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/nlgwu3vW6vs" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/GOvCBkKFa3k" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/zQES9O6amig" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/ZyFgqtPcGgI" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/ba-p5wGW6sQ" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/xXjn7ltIz7Y" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/aCc8VYx9ScA" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/fUpsIU8GHMo" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/bZyQxgte7wY" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/Wt2LJZq7Qk0" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/VMQwAsGDH8c" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/pRU-HlHiSI8" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/rUBnT-whpKw" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/Umbe1ZFFepQ" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/sHU3FFwouk0" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe loading="lazy" src="https://www.youtube.com/embed/y3oUtj6VVts" allowfullscreen></iframe></div>
+        </div>
+        <p class="text-secondary font-bold text-sm" style="margin-bottom: 2rem;">👈 Skrol ke tepi untuk lihat lebih banyak video AI</p>
+      </div>
+    </section>
+
+    <!-- 6. BENEFITS -->
+    <section class="section-py bg-alt">
+      <div class="container max-w-5xl">
+        <div class="text-center section-header">
+          <h2 class="font-black section-title">Bukan Sekadar Feature, Ini <span class="gradient-text">Hasil Sebenar.</span></h2>
+        </div>
+
+        <div class="grid-3">
+          <div class="glass-card benefit-card">
+            <div class="benefit-icon">⚡</div>
+            <h3 class="font-bold text-xl mb-2">Jimat 40 Jam Seminggu</h3>
+            <p class="text-secondary font-medium">Biar AI buat kerja berat. Anda fokus pada strategi dan sales sahaja tanpa pening edit video.</p>
+          </div>
+          <div class="glass-card benefit-card">
+            <div class="benefit-icon">�</div>
+            <h3 class="font-bold text-xl mb-2">Tak Perlu ON PC 24 Jam</h3>
+            <p class="text-secondary font-medium">Semua automasi berjalan 100% di server cloud. Setting sekali guna PC, pantau je guna phone kat kedai mamak.</p>
+          </div>
+          <div class="glass-card benefit-card">
+            <div class="benefit-icon">💰</div>
+            <h3 class="font-bold text-xl mb-2">Potong Kos Gila-Gila</h3>
+            <p class="text-secondary font-medium">Kos langganan setahun jauh lebih murah berbanding bayar gaji seorang intern sebulan.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. TARGET USER -->
+    <section class="section-py">
+      <div class="container max-w-4xl text-center">
+        <div class="section-header">
+          <h2 class="font-black section-title">Siapa Yang <span class="gradient-text">Sesuai Guna?</span></h2>
+        </div>
+        <div class="glass-card" style="padding: 2rem; text-align: left;">
+          <div class="grid-2">
+            <div>
+              <h3 class="font-bold text-lg mb-2">🏢 Business Owner</h3>
+              <p class="text-secondary font-medium text-sm">Gerakkan marketing dengan lebih laju tanpa perlu urus terlalu banyak tools teknikal.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg mb-2">🚀 Marketing Team</h3>
+              <p class="text-secondary font-medium text-sm">Percepatkan produksi content dan urus pelbagai platform dari satu dashboard.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg mb-2">💼 Agency</h3>
+              <p class="text-secondary font-medium text-sm">Urus ramai client serentak. Struktur operasi dan pengurusan workflow jadi lebih profesional.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg mb-2">📸 Content Creator</h3>
+              <p class="text-secondary font-medium text-sm">Hasilkan video dan posting lebih pantas, kekal konsisten tiap hari secara automatik.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. SOCIAL PROOF -->
+    <section class="section-py bg-alt">
+      <div class="container max-w-5xl text-center">
+        <div class="section-header">
+          <h2 class="font-black section-title">Feedback <span class="gradient-text">Pengguna Sebenar</span></h2>
+          <p class="section-subtitle">Ribuan post dan video berjaya diterbitkan setiap hari.</p>
+        </div>
+        <div class="feedback-grid">
+          <img src="Feedback/image.png" alt="Testimoni" class="feedback-img" />
+          <img src="Feedback/image copy.png" alt="Testimoni" class="feedback-img" />
+          <img src="Feedback/image copy 2.png" alt="Testimoni" class="feedback-img" />
+          <img src="Feedback/image copy 3.png" alt="Testimoni" class="feedback-img" />
+          <img src="Feedback/image copy 4.png" alt="Testimoni" class="feedback-img feedback-highlight" />
+          <img src="Feedback/image copy 5.png" alt="Testimoni" class="feedback-img feedback-highlight" />
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: AUTOPOST EXPLANATION SECTION -->
+    <section class="section-py">
+      <div class="container max-w-4xl text-center">
+        <div class="glass-card" style="padding: 3rem 2rem; border-color: var(--accent); border-width: 2px; background: linear-gradient(to bottom, #ffffff, var(--bg-secondary));">
+          <h2 class="font-black section-title" style="margin-bottom: 1.5rem; font-size: clamp(1.8rem, 3vw, 2.2rem);">
+            <span class="gradient-text">Autopost Ke Semua Platform Serentak.</span>
+          </h2>
+          <p class="section-subtitle font-bold" style="color: var(--text-primary); font-size: 1.25rem; margin-bottom: 2rem;">
+            Dengan satu klik, anda boleh schedule ribuan content untuk semua akaun untuk sebulan, dua bulan atau selama mana anda mahu.
+          </p>
+          
+          <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 9999px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <span class="font-bold" style="font-size: 0.875rem;">Facebook</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 9999px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#E4405F"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              <span class="font-bold" style="font-size: 0.875rem;">Instagram</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 9999px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#000000"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 21.68c-5.346 0-9.68-4.334-9.68-9.68 0-5.346 4.334-9.68 9.68-9.68 5.346 0 9.68 4.334 9.68 9.68 0 5.346-4.334 9.68-9.68 9.68zm5.545-9.68c0-3.056-2.489-5.545-5.545-5.545S6.455 8.944 6.455 12s2.489 5.545 5.545 5.545 5.545-2.489 5.545-5.545zm-5.545 3.513c-1.938 0-3.513-1.575-3.513-3.513s1.575-3.513 3.513-3.513 3.513 1.575 3.513 3.513-1.575 3.513-3.513 3.513z"/></svg>
+              <span class="font-bold" style="font-size: 0.875rem;">Threads</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 9999px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#000000"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.04.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.78-1.15 5.54-3.33 7.31-1.92 1.57-4.62 2.2-7.03 1.53-2.61-.74-4.68-2.98-5.28-5.67-.53-2.43-.16-5.04 1.2-7.13 1.73-2.73 5.01-4.26 8.22-3.84v4.02c-1.54-.11-3.1.41-4.05 1.55-1.01 1.2-1.25 2.97-.66 4.38.56 1.34 2.11 2.34 3.61 2.11 1.47-.24 2.65-1.48 2.94-2.92.08-.38.11-.76.11-1.15V.02z"/></svg>
+              <span class="font-bold" style="font-size: 0.875rem;">TikTok</span>
+            </div>
+          </div>
+          <p class="text-secondary" style="font-size: 0.875rem;">Termasuk integrasi dengan YouTube, LinkedIn, Pinterest, Bluesky, Mastodon dan lain-lain (Sehingga 10 platform disokong).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. OBJECTION HANDLING & 10. PRICING -->
+    <section id="pricing" class="section-py bg-alt">
+      <div class="container max-w-5xl">
+        <div class="text-center section-header">
+          <h2 class="font-black section-title">Pilih Pelan <span class="gradient-text">Meroket</span> Kau</h2>
+          <p class="section-subtitle">
+            Langganan sistem All-in-One: AI Studio, Social Connect (10 Platform), Telegram Integration & Developer API. 
+            <i>Menggunakan sistem "Fish" untuk pengurusan kredit platform.</i>
+          </p>
+        </div>
+
+        <!-- Packages -->
+        <div class="grid-3" style="margin-bottom: 3rem;">
+          <!-- Beginner -->
+          <div class="glass-card pricing-card" style="background: white;">
+            <h3 class="font-bold text-2xl">Beginner</h3>
+            <p class="text-secondary font-medium mt-2">Sesuai untuk mula mencuba AI.</p>
+            <div class="price-amount">RM49<span class="price-period">/ bulan</span></div>
+            <ul class="features-list">
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <div><b>240 FISH Token</b> <br><span style="font-size: 0.875rem; color: var(--text-muted); font-weight: normal;">(30 video content - 8-10 seconds)</span></div>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Access untuk Connect <b>3 Akaun</b> Sosial Media</span>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Autopost ke FB, IG, Threads & TikTok</span>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Akses AI Studio (Teks, Imej, Video)</span>
+              </li>
+            </ul>
+            <a href="#" class="btn btn-outline" style="width: 100%; margin-top: auto;">Langgan Beginner</a>
+          </div>
+
+          <!-- Growth -->
+          <div class="glass-card pricing-card featured" style="background: white;">
+            <div class="badge-top">👑 Paling Popular</div>
+            <h3 class="font-bold text-2xl">Growth</h3>
+            <p class="text-secondary font-medium mt-2">Untuk content creator & bisnes aktif.</p>
+            <div class="price-amount">RM149<span class="price-period">/ bulan</span></div>
+            <ul class="features-list" style="margin-top: 2rem;">
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <div><b>1000 FISH Token</b> <br><span style="font-size: 0.875rem; color: var(--text-muted); font-weight: normal;">(125 video content - 8-10 seconds)</span></div>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Access untuk Connect <b>100 Akaun</b> Sosial Media</span>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Autopost ke FB, IG, Threads & TikTok</span>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Content & Publishing Workflow</span>
+              </li>
+            </ul>
+            <a href="#" class="btn btn-primary animate-pulse-glow" style="width: 100%; margin-top: auto; padding: 1.25rem;">🚀 Langgan Growth</a>
+          </div>
+
+          <!-- Scale -->
+          <div class="glass-card pricing-card" style="background: white;">
+            <h3 class="font-bold text-2xl">Scale</h3>
+            <p class="text-secondary font-medium mt-2">Sesuai untuk Agensi dan Automasi Tegar.</p>
+            <div class="price-amount">RM399<span class="price-period">/ bulan</span></div>
+            <ul class="features-list">
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <div><b>5000 FISH Token</b> <br><span style="font-size: 0.875rem; color: var(--text-muted); font-weight: normal;">(625 video content - 8-10 seconds)</span></div>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Access untuk Connect <b>UNLIMITED</b> Sosial Media</span>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Autopost ke FB, IG, Threads & TikTok</span>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>Telegram Bot & Developer API</span>
+              </li>
+              <li>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> 
+                <span>VIP Support</span>
+              </li>
+            </ul>
+            <a href="#" class="btn btn-outline" style="width: 100%; margin-top: auto;">Langgan Scale</a>
+          </div>
+        </div>
+
+        <!-- Objection Handling Banner -->
+        <div class="glass-card" style="display: flex; align-items: center; gap: 2rem; padding: 2rem; background: #dcfce7; border-color: #86efac;">
+          <div style="font-size: 3rem;">🛡️</div>
+          <div>
+            <h3 class="font-bold text-xl mb-1" style="color: #065f46;">Boleh Batal Bila-bila Masa</h3>
+            <p style="color: #064e3b; font-weight: 500;">Tak yakin? Anda ada kawalan penuh di dashboard. Tiada kontrak, tiada paksaan. Free trial support juga tersedia untuk mencuba sistem Fish kami.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. FAQ -->
+    <section class="section-py bg-alt">
+      <div class="container max-w-3xl">
+        <div class="text-center section-header">
+          <h2 class="font-black section-title">Soalan <span class="gradient-text">Biasa</span></h2>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="glass-card faq-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'block' ? 'none' : 'block'">
+            <div class="faq-question">Perlu pandai teknikal atau coding? <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg></div>
+            <div class="faq-answer">Tidak. Antaramuka kami sangat mesra pengguna. Hanya sambung akaun dan taip prompt untuk AI. Kecuali anda nak guna ciri Developer API untuk custom integrasi.</div>
+          </div>
+          <div class="glass-card faq-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'block' ? 'none' : 'block'">
+            <div class="faq-answer" style="display: block; margin-top: 0; color: var(--text-primary);"><b>Berapa banyak akaun sosial saya boleh sambung?</b></div>
+            <div class="faq-answer" style="display: block; margin-top: 0.5rem;">Sistem menyokong pengurusan multi-akaun. Anda boleh menyambungkan FB, IG, TikTok, YouTube, Threads, LinkedIn, Google Business, Pinterest, Bluesky, dan Mastodon dari satu tempat.</div>
+          </div>
+          <div class="glass-card faq-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'block' ? 'none' : 'block'">
+            <div class="faq-question">Apa itu sistem "Fish"? <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg></div>
+            <div class="faq-answer">"Fish" adalah nilai kredit platform yang digunakan setiap kali anda menjana AI Content, Video, atau menggunakan API. Boleh ditambah (top-up) bila-bila masa bila diperlukan.</div>
+          </div>
+          <div class="glass-card faq-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'block' ? 'none' : 'block'">
+            <div class="faq-question">Adakah video yang di-generate oleh AI ini selamat untuk monetize? <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg></div>
+            <div class="faq-answer">Ya, sangat selamat. Sistem kami menjana video dengan aset yang unik dan skrip yang berbeza (menggunakan AI Prompt Spinner), menjadikan video anda dikira sebagai "Original Content" oleh algoritma platform seperti TikTok dan YouTube.</div>
+          </div>
+          <div class="glass-card faq-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'block' ? 'none' : 'block'">
+            <div class="faq-question">Kena biarkan PC on 24 jam ke untuk bot jalan? <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg></div>
+            <div class="faq-answer">Tak perlu! ASEA Studio adalah sistem "Cloud-Based". Anda cuma perlu setup sekali, dan boleh tutup PC. Semua proses generate video dan auto-posting akan terus berjalan di server kami. Anda boleh semak hasil guna smartphone sahaja.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 & 13. FINAL CLOSING & CTA -->
+    <section class="closing-section">
+      <div class="container max-w-4xl">
+        <h2 class="font-black" style="font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 1.5rem;">
+          Jangan Biarkan Pesaing<br />
+          <span class="gradient-text">Tinggalkan Anda.</span>
+        </h2>
+        <p class="section-subtitle" style="margin-bottom: 3rem; font-size: 1.25rem;">
+          Automasi content adalah masa depan. Mula hasilkan AI UGC Video dan auto-publish ke semua platform hari ini. Skalakan bisnes anda sekarang.
+        </p>
+        <a href="#pricing" class="btn btn-primary animate-pulse-glow" style="font-size: 1.5rem; padding: 1.5rem 3rem;">
+          ⚡ Akses ASEA Studio Sekarang
+        </a>
+        <p class="text-muted font-bold mt-6 text-sm uppercase tracking-wide">
+          🔒 Pembayaran Selamat & Dijamin
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container max-w-6xl">
+      <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>© 2026 ASEA Studio Bot. All rights reserved. <br> <span style="font-size: 0.75rem; color: var(--border);">MOHAMMAD AZRUL NIZAM AZMI</span></div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="mailto:support@aseastudio.com">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
